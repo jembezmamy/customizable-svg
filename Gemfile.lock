@@ -114,4 +114,5 @@ DEPENDENCIES
   compass-normalize
   haml-sprockets!
   middleman (~> 3.0.12)
+  rb-fsevent
   rb-inotify (~> 0.9)
