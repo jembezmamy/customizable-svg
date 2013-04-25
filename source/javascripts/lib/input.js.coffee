@@ -4,7 +4,7 @@ class CustomizableSVG.Input extends CustomizableSVG.EventDispatcher
 
   constructor: (placeholder) ->
     @$placeholder = $(placeholder)
-    @name = @$placeholder.attr "personalizable:name"
+    @name = @$placeholder.attr "customizable:name"
     @type = "number"
     @buildInput()
 
