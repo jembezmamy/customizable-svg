@@ -3,7 +3,7 @@ class CustomizableSVG.Vertex extends CustomizableSVG.Model
   
   @add: (x, y) ->
     @all ||= []
-    @find(x, y) || @all[@all.length] = new CustomizableSVG.Vertex(x, y)
+    @find(x, y) || @all[@all.length] = new CustomizableSVG.Vertex(x, y, true)
     
   @find: (x, y) ->
     x = Number(x)
@@ -12,5 +12,6 @@ class CustomizableSVG.Vertex extends CustomizableSVG.Model
       return vertex if vertex.get('x') == x && vertex.get('y') == y
     null
   
-  constructor: (x, y) ->
+  constructor: (x, y, inCollection = false) ->
+    @inCollection = inCollection
     @attr = x: Number(x), y: Number(y), version: 0

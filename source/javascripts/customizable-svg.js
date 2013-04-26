@@ -3,4 +3,6 @@
 //= require_tree ./lib
 //= require_tree .
 
-window.CustomizableSVG = {}
+window.CustomizableSVG = {
+  Elements: {}
+}

@@ -13,9 +13,10 @@ class CustomizableSVG.Base
       
   buildElements: =>
     @elements = []
-    $('[customizable\\:length]').each (i, el) =>
+    $('[customizable\\:lengths], [customizable\\:points]').each (i, el) =>
       elementClass = switch $(el)[0].nodeName
-        when "line" then CustomizableSVG.Line
+        when "line" then CustomizableSVG.Elements.Line
+        when "polygon" then CustomizableSVG.Elements.Polygon
       @elements.push new elementClass(el)
 
   buildInputs: =>
