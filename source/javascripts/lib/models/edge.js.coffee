@@ -1,9 +1,12 @@
 class CustomizableSVG.Edge extends CustomizableSVG.Model
   @all: null
   
-  @add: (v1, v2, length) ->
+  @add: (v1, v2, params = {}) ->
     @all ||= []
-    @find(v1, v2) || @all[@all.length] = new CustomizableSVG.Edge(v1, v2, length)
+    edgeClass = switch params.elastic
+      when true then CustomizableSVG.ElasticEdge
+      else CustomizableSVG.RigidEdge
+    @find(v1, v2) || @all[@all.length] = new edgeClass(v1, v2, params)
     
   @find: (v1, v2) ->
     for edge in @all
@@ -11,41 +14,44 @@ class CustomizableSVG.Edge extends CustomizableSVG.Model
     null
   
   
-  calculateLength: '' # dynamically generated function
+  calculateLength: null # dynamically generated function
+  length: 0 # length fallback if no calculateLength function is provided
   angle: 0
   
-  constructor: (v1, v2, lengthFormula) ->
-    @attr = v1: v1, v2: v2
+  constructor: (v1, v2, params = {}) ->
+    @attr = v1: v1, v2: v2, version: 0
     @angle = Math.atan2 v2.get("y") - v1.get("y"), v2.get("x") - v1.get("x")
     @sin = Math.sin(@angle)
     @cos = Math.cos(@angle)
-    @parseLengthFormula lengthFormula
+      
     v1.on "change", @handleVertexChange
     v2.on "change", @handleVertexChange
     
-  parseLengthFormula: (formula) =>
-    for name of CustomizableSVG.Measurement.all
-      if formula.match name
-        CustomizableSVG.Measurement.find(name).on "change", @handleMeasurementChange
-      formula = formula.replace name, "CustomizableSVG.Measurement.find('#{name}').get('value')"
-    eval "this.calculateLength = function() {return #{formula}}"
+    v1.addEdge this
+    v2.addEdge this
+    
+  suggestPositionFor: (vertex, version) =>
+    length = if @calculateLength then @calculateLength() else @length
+    if vertex == @get('v1')
+      base = @get("v2")
+      direction = -1
+    else
+      base = @get("v1")
+      direction = 1
+    if base.get("version") < version
+      position = base.getSuggestedPosition(version, this)
+    if position
+      x = position.x
+      y = position.y
+    else
+      x = base.get("x")
+      y = base.get("y")
+    x: x + direction*@cos*length
+    y: y + direction*@sin*length
+    length: length
     
   update: =>
-    length = @calculateLength()
-    if @attr.v1.get('version') > @attr.v2.get("version")
-      @attr.v2.set
-        x: @attr.v1.get("x") + @cos*length
-        y: @attr.v1.get("y") + @sin*length
-        version: @attr.v1.get('version')
-    else if @attr.v1.get('version') < @attr.v2.get("version")
-      @attr.v1.set
-        x: @attr.v2.get("x") - @cos*length
-        y: @attr.v2.get("y") - @sin*length
-        version: @attr.v2.get('version')
+    @set version: Math.max @attr.v1.get('version'), @attr.v2.get('version')
     
   handleVertexChange: =>
-    @update()
-    
-  handleMeasurementChange: =>
-    @attr.v1.set version: @attr.v2.get('version')+1
     @update()

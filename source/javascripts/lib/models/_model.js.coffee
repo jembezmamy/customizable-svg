@@ -15,7 +15,7 @@ class CustomizableSVG.Model extends CustomizableSVG.EventDispatcher
         events += "change:#{name}"
         
     if events.length > 0
-      @trigger "#{events} change"
+      @trigger "#{events} change", this
 
   get: (name) =>
     @attr[name]

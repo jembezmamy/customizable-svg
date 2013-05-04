@@ -1,6 +1,5 @@
 class CustomizableSVG.Base
   inputs: null
-  elements: null
 
   constructor: ->
     @buildMeasurements()
@@ -12,12 +11,14 @@ class CustomizableSVG.Base
       CustomizableSVG.Measurement.add $(el).attr("customizable:name")
       
   buildElements: =>
-    @elements = []
     $('[customizable\\:lengths], [customizable\\:points]').each (i, el) =>
       elementClass = switch $(el)[0].nodeName
         when "line" then CustomizableSVG.Elements.Line
         when "polygon" then CustomizableSVG.Elements.Polygon
-      @elements.push new elementClass(el)
+        when "text" then CustomizableSVG.Elements.Text
+      new elementClass(el)
+    # inter-element bindings cannot be created before all elements are initialized
+    CustomizableSVG.Elements.Base.buildBindings()
 
   buildInputs: =>
     @inputs = []
