@@ -12,6 +12,10 @@ class CustomizableSVG.Edge extends CustomizableSVG.Model
     for edge in @all
       return edge if (edge.get("v1") == v1 && edge.get("v2") == v2) || (edge.get("v2") == v1 && edge.get("v1") == v2)
     null
+    
+  @resetVersions: ->
+    for edge in @all
+      edge.set version: 0
   
   
   calculateLength: null # dynamically generated function
@@ -30,7 +34,9 @@ class CustomizableSVG.Edge extends CustomizableSVG.Model
     v1.addEdge this
     v2.addEdge this
     
-  suggestPositionFor: (vertex, version) =>
+  suggestPositionFor: (vertex, version, ignoredVertices = []) =>
+    if ignoredVertices.indexOf(@get('v1')) != -1 || ignoredVertices.indexOf(@get('v2')) != -1
+      return false
     length = if @calculateLength then @calculateLength() else @length
     if vertex == @get('v1')
       base = @get("v2")
@@ -39,7 +45,7 @@ class CustomizableSVG.Edge extends CustomizableSVG.Model
       base = @get("v1")
       direction = 1
     if base.get("version") < version
-      position = base.getSuggestedPosition(version, this)
+      position = base.getSuggestedPosition(version, [vertex].concat ignoredVertices)
     if position
       x = position.x
       y = position.y

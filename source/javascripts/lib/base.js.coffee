@@ -8,15 +8,14 @@ class CustomizableSVG.Base
 
   buildMeasurements: =>
     $('[customizable\\:name]').each (i, el) =>
-      CustomizableSVG.Measurement.add $(el).attr("customizable:name")
+      measurement = CustomizableSVG.Measurement.add $(el).attr("customizable:name")
+      measurement.on "after:change", @handleMeasurementChange
       
   buildElements: =>
     $('[customizable\\:lengths], [customizable\\:points]').each (i, el) =>
-      elementClass = switch $(el)[0].nodeName
-        when "line" then CustomizableSVG.Elements.Line
-        when "polygon" then CustomizableSVG.Elements.Polygon
-        when "text" then CustomizableSVG.Elements.Text
-      new elementClass(el)
+      type = $(el)[0].nodeName
+      className = type.substr(0,1).toUpperCase() + type.substr(1)
+      new CustomizableSVG.Elements[className](el)
     # inter-element bindings cannot be created before all elements are initialized
     CustomizableSVG.Elements.Base.buildBindings()
 
@@ -33,3 +32,7 @@ class CustomizableSVG.Base
       when "number" then "value"
       when "unit" then "unit"
     measurement.set name, input.getValue()
+    
+  handleMeasurementChange: =>
+    CustomizableSVG.Vertex.resetVersions()
+    CustomizableSVG.Edge.resetVersions()

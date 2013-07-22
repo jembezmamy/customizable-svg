@@ -27,7 +27,7 @@ class CustomizableSVG.Input extends CustomizableSVG.EventDispatcher
     body.appendTo html
       
     @$input = $(document.createElementNS("http://www.w3.org/1999/xhtml", "input")).attr type: 'number'
-    @$input.attr style: "position: absolute; display: block; left: 0; top: 0; bottom: 0; right: 0; margin: 0; -webkit-transform: translate(20px, 17px)"
+    @$input.attr style: "position: absolute; display: block; left: 0; top: 0; bottom: 0; right: 0; margin: 0;"
     @$input.on "change", @handleChange
     @$input.appendTo body
     
