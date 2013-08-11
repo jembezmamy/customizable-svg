@@ -12,6 +12,16 @@ class CustomizableSVG.Vertex extends CustomizableSVG.Model
       return vertex if vertex.get('x') == x && vertex.get('y') == y
     null
     
+  @min: (name) ->
+    for vertex in @all
+      min = min && Math.min(vertex.get(name), min) || vertex.get(name)
+    min
+    
+  @max: (name) ->
+    for vertex in @all
+      max = max && Math.max(vertex.get(name), max) || vertex.get(name)
+    max
+    
   @resetVersions: ->
     for vertex in @all
       vertex.set version: 0
@@ -51,10 +61,7 @@ class CustomizableSVG.Vertex extends CustomizableSVG.Model
     for edge in edges
       if (!rigid || version == edge.get('version'))
         position = edge.suggestPositionFor this, version, ignoredVertices
-        if position 
-          el = document.createElementNS "http://www.w3.org/2000/svg", "circle"
-          $(el).attr(cx: position.x, cy: position.y, r: 2, fill: "red").appendTo("svg")
-          $(el).remove()
+        if position
           position.length ||= 1
           total.x += position.x / position.length
           total.y += position.y / position.length

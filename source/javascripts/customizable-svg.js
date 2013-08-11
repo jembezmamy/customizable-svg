@@ -4,5 +4,6 @@
 //= require_tree .
 
 window.CustomizableSVG = {
-  Elements: {}
+  Elements: {},
+  Inputs: {}
 }

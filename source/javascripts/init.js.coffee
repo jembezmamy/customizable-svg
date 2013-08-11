@@ -1,1 +1,1 @@
-new CustomizableSVG.Base()
+CustomizableSVG.Base.getInstance().init()
