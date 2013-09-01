@@ -11,6 +11,6 @@ class CustomizableSVG.Elements.Polygon extends CustomizableSVG.Elements.Base
     
   render: =>
     data = []
-    for v in @vertices
-      data.push "#{v.get 'x'},#{v.get 'y'}"
+    for v, i in @vertices
+      data.push "#{@getPosition i, 'x'},#{@getPosition i, 'y'}"
     @$el.attr points: data.join ' '

@@ -8,7 +8,7 @@ class CustomizableSVG.Elements.Line extends CustomizableSVG.Elements.Base
     
   render: =>
     @$el.attr
-      x1: @vertices[0].get 'x'
-      y1: @vertices[0].get 'y'
-      x2: @vertices[1].get 'x'
-      y2: @vertices[1].get 'y'
+      x1: @getPosition 0, "x"
+      y1: @getPosition 0, "y"
+      x2: @getPosition 1, "x"
+      y2: @getPosition 1, "y"

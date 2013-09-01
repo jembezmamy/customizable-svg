@@ -7,5 +7,5 @@ class CustomizableSVG.Elements.Text extends CustomizableSVG.Elements.Base
     
   render: =>
     @$el.attr
-      x: @vertices[0].get 'x'
-      y: @vertices[0].get 'y'
+      x: @getPosition 0, 'x'
+      y: @getPosition 0, 'y'

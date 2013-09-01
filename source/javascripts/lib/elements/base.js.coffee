@@ -23,6 +23,7 @@ class CustomizableSVG.Elements.Base
     @buildDynamicVertices()
     @buildRigidEdges()
     @buildElasticEdges()
+    CustomizableSVG.Base.getInstance().on "change:scale", @handleChange
       
   buildDynamicVertices: =>
     return unless @$el.attr('customizable:points')
@@ -89,6 +90,9 @@ class CustomizableSVG.Elements.Base
       @vertices[i] = CustomizableSVG.Vertex.add @vertices[i].get('x'), @vertices[i].get('y')
       @vertices[i].on "change", @handleChange
     @vertices[i]
+    
+  getPosition: (vertexIndex, attribute) =>
+    @vertices[vertexIndex].get(attribute) * CustomizableSVG.Base.getInstance().scale
     
   handleChange: =>
     @render()

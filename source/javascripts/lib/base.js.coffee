@@ -12,6 +12,7 @@ class CustomizableSVG.Base extends CustomizableSVG.EventDispatcher
   
   originalViewBox: null
   unit: "mm"
+  scale: 1
 
   init: =>
     @$svg = $("svg").first()
@@ -28,6 +29,11 @@ class CustomizableSVG.Base extends CustomizableSVG.EventDispatcher
     return if unit == @unit
     @unit = unit
     @trigger "change:unit change", this
+    
+  setScale: (scale) =>
+    return if scale == @scale
+    @scale = scale
+    @trigger "change:scale change", this
     
 
   buildMeasurements: =>
@@ -82,6 +88,7 @@ class CustomizableSVG.Base extends CustomizableSVG.EventDispatcher
       x2: length  + @unit
       y2: 5.5
     @$scaleLabel.attr(x: (length / 2)+@unit).text [length, @unit].join(" ")
+    @setScale @$scaleLine.get(0).getBBox().width / length
     
   
   
@@ -101,11 +108,14 @@ class CustomizableSVG.Base extends CustomizableSVG.EventDispatcher
     y = Math.floor CustomizableSVG.Vertex.min("y")
     width = Math.ceil CustomizableSVG.Vertex.max("x") - x
     height = Math.ceil CustomizableSVG.Vertex.max("y") - y
-    @$canvas.attr viewBox: [x, y, width, height].join(" "), width: width + @unit, height: height + @unit
+    @$canvas.attr
+      viewBox: [@scale * x, @scale * y, @scale * width, @scale * height].join(" "),
+      width: width + @unit,
+      height: height + @unit
     svgViewBox = @originalViewBox[0..1]
     canvasBB = @$canvas.get(0).getBoundingClientRect()
-    svgViewBox.push Math.max @originalViewBox[2], canvasBB.width + canvasBB.left
-    svgViewBox.push Math.max @originalViewBox[3], canvasBB.height + canvasBB.top
+    svgViewBox.push Math.max @originalViewBox[2], canvasBB.width + canvasBB.left + 30
+    svgViewBox.push Math.max @originalViewBox[3], canvasBB.height + canvasBB.top + 30
     @$svg.attr viewBox: svgViewBox.join(" "), width: svgViewBox[2], height: svgViewBox[3]
     scaleY = svgViewBox[3] - svgViewBox[1] - 20
     @$scale.attr transform: "translate(10, #{scaleY})"
@@ -125,5 +135,6 @@ class CustomizableSVG.Base extends CustomizableSVG.EventDispatcher
     @adjustSize()
     
   handleUnitChange: =>
-    @adjustSize()
     @updateScale()
+    @adjustSize()
+    
