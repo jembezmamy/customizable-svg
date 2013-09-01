@@ -24,6 +24,9 @@ class CustomizableSVG.Base extends CustomizableSVG.EventDispatcher
     @initScale()
     @initSize()
     
+    for input in @inputs
+      @handleInputChange(input)
+    
     
   setUnit: (unit) =>
     return if unit == @unit

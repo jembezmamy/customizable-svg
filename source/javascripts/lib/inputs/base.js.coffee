@@ -25,6 +25,8 @@ class CustomizableSVG.Inputs.Base extends CustomizableSVG.EventDispatcher
     @$input = @buildInput()
     @$input.attr style: "position: absolute; display: block; left: 0; top: 0; bottom: 0; right: 0; margin: 0;"
     @$input.on "change", @handleChange
+    if @$placeholder.attr("customizable:default")
+      @$input.val @$placeholder.attr("customizable:default")
     @$input.appendTo body
     
     @$placeholder.replaceWith(foreignObject)
